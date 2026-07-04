@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: main
+    tables:
+      - name: yellow_tripdata_2024_01
+        description: "External parquet source for Jan 2024 yellow taxi trips"
+      - name: yellow_tripdata_2024_02
+        description: "External parquet source for Feb 2024 yellow taxi trips"
+      - name: yellow_tripdata_2024_03
+        description: "External parquet source for Mar 2024 yellow taxi trips"
+      - name: taxi_zone_lookup
+        description: "Taxi zone lookup CSV"
+
+models:
+  - name: stg_yellow_trips
+    description: "Unified raw yellow trips across Jan-Mar with light standardization"
+  - name: stg_zones
+    description: "Standardized taxi zones lookup"

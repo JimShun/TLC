@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: silver_trips
+    description: "Cleaned, deduplicated yellow taxi trips with validated zone FKs"
+    columns:
+      - name: pickup_ts
+        tests: [not_null]
+      - name: dropoff_ts
+        tests: [not_null]
+      - name: pickup_date
+        tests: [not_null]
+      - name: pu_location_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_zones')
+              field: location_id
+      - name: do_location_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_zones')
+              field: location_id
+      - name: payment_type
+        tests:
+          - accepted_values:
+              values: [1, 2, 3, 4, 5, 6]
+      - name: trip_distance
+        tests: [not_null]
+      - name: fare_amount
+        tests: [not_null]

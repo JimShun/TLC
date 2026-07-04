@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: dim_zone
+    columns:
+      - name: zone_id
+        tests: [not_null, unique]
+
+  - name: dim_date
+    columns:
+      - name: date_day
+        tests: [not_null, unique]
+
+  - name: fact_trip
+    columns:
+      - name: trip_sk
+        tests: [not_null, unique]
+      - name: pickup_date
+        tests: [not_null]
+      - name: pu_zone_id
+        tests:
+          - relationships:
+              to: ref('dim_zone')
+              field: zone_id
+      - name: do_zone_id
+        tests:
+          - relationships:
+              to: ref('dim_zone')
+              field: zone_id
