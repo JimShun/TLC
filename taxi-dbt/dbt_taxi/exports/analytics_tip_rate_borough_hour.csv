@@ -1,0 +1,193 @@
+pickup_borough,pickup_hour,trip_count,tip_rate_pct
+Bronx,0,278,691.4
+Bronx,1,193,3.74
+Bronx,2,116,16.71
+Bronx,3,201,19.5
+Bronx,4,701,4.56
+Bronx,5,1204,0.37
+Bronx,6,1902,0.58
+Bronx,7,2372,0.33
+Bronx,8,2191,1.86
+Bronx,9,1840,0.37
+Bronx,10,1605,0.78
+Bronx,11,1549,0.58
+Bronx,12,1538,1.2
+Bronx,13,1433,0.73
+Bronx,14,1278,0.94
+Bronx,15,1086,4.08
+Bronx,16,1029,2.91
+Bronx,17,966,1.54
+Bronx,18,798,2.36
+Bronx,19,607,5.94
+Bronx,20,551,1.15
+Bronx,21,433,5.16
+Bronx,22,412,1.45
+Bronx,23,409,12.31
+Brooklyn,0,3351,157.42
+Brooklyn,1,2129,10.71
+Brooklyn,2,1743,207.42
+Brooklyn,3,1898,7.58
+Brooklyn,4,2649,5.15
+Brooklyn,5,2845,3.19
+Brooklyn,6,4649,6.02
+Brooklyn,7,6141,3.39
+Brooklyn,8,6688,4.34
+Brooklyn,9,5797,4.12
+Brooklyn,10,4937,3.58
+Brooklyn,11,4696,4.56
+Brooklyn,12,4892,4.0
+Brooklyn,13,4356,4.24
+Brooklyn,14,4051,4.32
+Brooklyn,15,3913,5.53
+Brooklyn,16,3560,7.04
+Brooklyn,17,4144,8.35
+Brooklyn,18,4588,7.3
+Brooklyn,19,4158,9.45
+Brooklyn,20,3377,10.31
+Brooklyn,21,2857,13.13
+Brooklyn,22,3822,11.61
+Brooklyn,23,4408,10.95
+EWR,0,1,26.72
+EWR,1,4,5.06
+EWR,2,5,0.0
+EWR,3,6,10.1
+EWR,4,17,10.2
+EWR,5,38,22.06
+EWR,6,25,11.26
+EWR,7,28,25.56
+EWR,8,29,11.78
+EWR,9,27,60.01
+EWR,10,31,10.7
+EWR,11,25,9.15
+EWR,12,47,27.44
+EWR,13,71,166.34
+EWR,14,95,13.11
+EWR,15,109,21.95
+EWR,16,101,64.01
+EWR,17,86,58.33
+EWR,18,71,110.53
+EWR,19,62,14.28
+EWR,20,19,253.24
+EWR,21,6,7.57
+EWR,22,7,13.03
+EWR,23,3,17.38
+Manhattan,0,231884,19.78
+Manhattan,1,164979,20.11
+Manhattan,2,110194,19.6
+Manhattan,3,74423,24.22
+Manhattan,4,48537,16.7
+Manhattan,5,45124,17.59
+Manhattan,6,105115,17.99
+Manhattan,7,229100,19.89
+Manhattan,8,332837,20.08
+Manhattan,9,360911,20.27
+Manhattan,10,381047,20.26
+Manhattan,11,417856,20.01
+Manhattan,12,455834,20.02
+Manhattan,13,467164,20.16
+Manhattan,14,494395,19.75
+Manhattan,15,510467,19.78
+Manhattan,16,519210,21.75
+Manhattan,17,586432,22.8
+Manhattan,18,622311,22.82
+Manhattan,19,542867,22.09
+Manhattan,20,485517,22.49
+Manhattan,21,488871,20.95
+Manhattan,22,437206,21.29
+Manhattan,23,324107,19.61
+N/A,0,246,17.83
+N/A,1,217,29.87
+N/A,2,174,31.17
+N/A,3,148,58.35
+N/A,4,140,67.98
+N/A,5,107,19.59
+N/A,6,100,26.36
+N/A,7,122,5.91
+N/A,8,151,50.46
+N/A,9,171,6.0
+N/A,10,178,42.13
+N/A,11,184,35.4
+N/A,12,254,47.64
+N/A,13,190,22536.12
+N/A,14,211,9.1
+N/A,15,255,60.6
+N/A,16,259,43.57
+N/A,17,252,21.22
+N/A,18,234,436.95
+N/A,19,186,12.46
+N/A,20,206,41.78
+N/A,21,222,4087.45
+N/A,22,231,487.93
+N/A,23,271,56.93
+Queens,0,27266,15.37
+Queens,1,9296,14.36
+Queens,2,3932,14.18
+Queens,3,3122,10.45
+Queens,4,4060,8.05
+Queens,5,8899,10.69
+Queens,6,17544,11.18
+Queens,7,22398,21.61
+Queens,8,24092,86.8
+Queens,9,30425,15.19
+Queens,10,34555,15.85
+Queens,11,31133,16.33
+Queens,12,37728,16.5
+Queens,13,42878,16.45
+Queens,14,52961,16.86
+Queens,15,54572,16.83
+Queens,16,57698,17.3
+Queens,17,50643,17.06
+Queens,18,50606,17.54
+Queens,19,54806,17.54
+Queens,20,51530,17.68
+Queens,21,48563,17.3
+Queens,22,49274,16.76
+Queens,23,47802,16.55
+Staten Island,0,12,1.69
+Staten Island,1,7,6.12
+Staten Island,2,5,13.25
+Staten Island,3,9,8.54
+Staten Island,4,13,5.16
+Staten Island,5,10,2.51
+Staten Island,6,8,9.21
+Staten Island,7,6,0.0
+Staten Island,8,12,12.78
+Staten Island,9,4,0.0
+Staten Island,10,8,73.37
+Staten Island,11,10,7.54
+Staten Island,12,10,15.87
+Staten Island,13,14,0.0
+Staten Island,14,8,2.73
+Staten Island,15,15,3.12
+Staten Island,16,8,18.43
+Staten Island,17,10,0.0
+Staten Island,18,3,0.0
+Staten Island,19,3,0.0
+Staten Island,20,7,2.2
+Staten Island,21,10,5.84
+Staten Island,22,12,2.04
+Staten Island,23,14,0.0
+Unknown,0,858,20.31
+Unknown,1,653,20.64
+Unknown,2,445,24.9
+Unknown,3,327,21.48
+Unknown,4,249,18.33
+Unknown,5,232,19.25
+Unknown,6,489,18.54
+Unknown,7,1139,19.77
+Unknown,8,1284,19.12
+Unknown,9,1397,18.49
+Unknown,10,1430,19.57
+Unknown,11,1563,18.58
+Unknown,12,1670,19.78
+Unknown,13,1783,18.3
+Unknown,14,1838,18.43
+Unknown,15,1892,18.73
+Unknown,16,1919,20.45
+Unknown,17,2023,24.06
+Unknown,18,2067,22.39
+Unknown,19,1862,21.78
+Unknown,20,1648,20.57
+Unknown,21,1631,23.93
+Unknown,22,1504,21.07
+Unknown,23,1214,20.15
