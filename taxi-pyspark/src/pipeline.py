@@ -31,58 +31,111 @@ def main():
     spark.sparkContext.setLogLevel("WARN")
 
     try:
+        # -------------------------
         # Load raw
+        # -------------------------
         trips_raw = spark.read.parquet(cfg.yellow_jan_url)
         zones_raw = spark.read.option("header", True).csv(cfg.zone_lookup_url)
 
-        # Persist raw copies
+        # Persist raw copies (bronze-like landing)
         trips_raw.write.mode("overwrite").parquet(str(cfg.raw_dir / "yellow_2024_01"))
         zones_raw.write.mode("overwrite").parquet(str(cfg.raw_dir / "taxi_zone_lookup"))
 
-        # Silver transform
-        trips = (
+        # -------------------------
+        # Staging transforms (NO filtering)
+        # -------------------------
+        trips_stg = (
             trips_raw
+            .withColumn("vendor_id", F.col("VendorID").cast("int"))
             .withColumn("pickup_ts", F.col("tpep_pickup_datetime").cast("timestamp"))
             .withColumn("dropoff_ts", F.col("tpep_dropoff_datetime").cast("timestamp"))
             .withColumn("pickup_date", F.to_date("pickup_ts"))
             .withColumn("pickup_hour", F.hour("pickup_ts"))
+            .withColumn("pu_location_id", F.col("PULocationID").cast("int"))
+            .withColumn("do_location_id", F.col("DOLocationID").cast("int"))
+            .withColumn("trip_distance", F.col("trip_distance").cast("double"))
+            .withColumn("fare_amount", F.col("fare_amount").cast("double"))
+            .withColumn("tip_amount", F.col("tip_amount").cast("double"))
+            .withColumn("total_amount", F.col("total_amount").cast("double"))
+            .withColumn("payment_type", F.col("payment_type").cast("int"))
             .withColumn("trip_duration_min", (F.col("dropoff_ts").cast("long") - F.col("pickup_ts").cast("long")) / 60.0)
             .select(
-                "VendorID", "pickup_ts", "dropoff_ts", "pickup_date", "pickup_hour",
-                "PULocationID", "DOLocationID", "trip_distance", "fare_amount",
-                "tip_amount", "total_amount", "payment_type", "trip_duration_min"
+                "vendor_id",
+                "pickup_ts",
+                "dropoff_ts",
+                "pickup_date",
+                "pickup_hour",
+                "pu_location_id",
+                "do_location_id",
+                "trip_distance",
+                "fare_amount",
+                "tip_amount",
+                "total_amount",
+                "payment_type",
+                "trip_duration_min",
             )
+        )
+
+        zones_stg = (
+            zones_raw
+            .withColumn("location_id", F.col("LocationID").cast("int"))
+            .withColumnRenamed("Borough", "borough")
+            .withColumnRenamed("Zone", "zone")
+            .select("location_id", "borough", "zone")
+        )
+
+        # -------------------------
+        # DQ checks at STAGING level
+        # -------------------------
+        assert_not_null(
+            trips_stg,
+            ["pickup_ts", "dropoff_ts", "pu_location_id", "do_location_id"],
+            "stg_yellow_trips"
+        )
+        assert_accepted_values(
+            trips_stg,
+            "payment_type",
+            [1, 2, 3, 4, 5, 6],
+            "stg_yellow_trips"
+        )
+        assert_range(
+            trips_stg,
+            "trip_duration_min",
+            cfg.min_duration,
+            cfg.max_duration,
+            "stg_yellow_trips"
+        )
+        assert_range(
+            trips_stg,
+            "trip_distance",
+            0.0,
+            100.0,
+            "stg_yellow_trips"
+        )
+
+        # -------------------------
+        # Silver transforms (filter + dedupe + valid zone IDs)
+        # -------------------------
+        trips = (
+            trips_stg
             .filter(F.col("fare_amount") > 0)
             .filter(F.col("trip_distance") >= 0)
             .filter(F.col("dropoff_ts") >= F.col("pickup_ts"))
             .filter((F.col("trip_duration_min") >= cfg.min_duration) & (F.col("trip_duration_min") <= cfg.max_duration))
-            .dropDuplicates(["VendorID", "pickup_ts", "dropoff_ts", "PULocationID", "DOLocationID", "fare_amount"])
+            .dropDuplicates(["vendor_id", "pickup_ts", "dropoff_ts", "pu_location_id", "do_location_id", "fare_amount", "total_amount"])
         )
 
-        zones = (
-            zones_raw
-            .withColumn("LocationID", F.col("LocationID").cast("int"))
-            .withColumnRenamed("Borough", "borough")
-            .withColumnRenamed("Zone", "zone")
-            .select("LocationID", "borough", "zone")
-        )
-
-        # Validate location IDs (drop invalid for lite demo)
-        valid_ids = zones.select(F.col("LocationID").alias("valid_loc")).distinct()
-        trips = trips.join(valid_ids, trips.PULocationID == valid_ids.valid_loc, "inner").drop("valid_loc")
-        trips = trips.join(valid_ids, trips.DOLocationID == valid_ids.valid_loc, "inner").drop("valid_loc")
-
-        # DQ checks
-        assert_not_null(trips, ["pickup_ts", "dropoff_ts", "PULocationID", "DOLocationID"], "silver_trips")
-        assert_accepted_values(trips, "payment_type", [1, 2, 3, 4, 5, 6], "silver_trips")
-        assert_range(trips, "trip_duration_min", cfg.min_duration, cfg.max_duration, "silver_trips")
-        assert_range(trips, "trip_distance", 0.0, 100.0, "silver_trips")
+        valid_ids = zones_stg.select(F.col("location_id").alias("valid_loc")).distinct()
+        trips = trips.join(valid_ids, trips.pu_location_id == valid_ids.valid_loc, "inner").drop("valid_loc")
+        trips = trips.join(valid_ids, trips.do_location_id == valid_ids.valid_loc, "inner").drop("valid_loc")
 
         # Write silver
         trips.write.mode("overwrite").partitionBy("pickup_date").parquet(str(cfg.silver_dir / "trips"))
-        zones.write.mode("overwrite").parquet(str(cfg.silver_dir / "zones"))
+        zones_stg.write.mode("overwrite").parquet(str(cfg.silver_dir / "zones"))
 
-        # Outputs (2 metrics only for lite scope)
+        # -------------------------
+        # Outputs (lite scope)
+        # -------------------------
         out_daily = daily_metrics(trips)
         out_pay = card_vs_cash_share(trips)
 
@@ -93,7 +146,7 @@ def main():
         out_daily.coalesce(1).write.mode("overwrite").option("header", True).csv(str(cfg.output_dir / "csv_daily_metrics"))
         out_pay.coalesce(1).write.mode("overwrite").option("header", True).csv(str(cfg.output_dir / "csv_card_vs_cash_share"))
 
-        print("[SUCCESS] Lite PySpark pipeline complete.")
+        print("[SUCCESS] PySpark pipeline complete with DQ checks at staging level.")
 
     finally:
         spark.stop()
